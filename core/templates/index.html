@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <!-- Main imageboard layout -->
+  <header class="site-header">
+    <h1><a href="{% url 'index' %}">C0de board</a></h1>
+    <nav class="board-list">
+      <ul>
+        {% for board in boards %}
+          <li><a href="{% url 'board_detail' board.slug %}">/{{ board.slug }}/ - {{ board.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </header>
+
+  <main class="thread-container">
+    <!-- New Thread Form -->
+    <section class="new-thread">
+      <h2>Create New Thread</h2>
+      <form action="{% url 'thread_create' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" placeholder="Thread title" required>
+        </div>
+        <div>
+          <label for="content">Message</label>
+          <textarea id="content" name="content" rows="4" placeholder="Your message here..." required></textarea>
+        </div>
+        <div>
+          <label for="image">Image (optional)</label>
+          <input type="file" id="image" name="image" accept="image/*">
+        </div>
+        <button type="submit">Post Thread</button>
+      </form>
+    </section>
+
+    <!-- Thread List -->
+    <section class="threads">
+      {% for thread in threads %}
+        <article class="thread">
+          <a href="{% url 'thread_detail' thread.id %}">
+            {% if thread.image %}
+              <img src="{{ thread.image.url }}" alt="{{ thread.title }}" class="thread-thumb">
+            {% endif %}
+            <h3>{{ thread.title }}</h3>
+          </a>
+          <p class="meta">Replies: {{ thread.reply_count }}</p>
+        </article>
+      {% empty %}
+        <p>No threads yet. Be the first to post!</p>
+      {% endfor %}
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; {{ current_year }} My Imageboard. Built with Django.</p>
+  </footer>
+{% endblock %}
+
