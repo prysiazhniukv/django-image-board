@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ board.title }} – C0de board{% endblock %}
+
+{% block content %}
+  <h1>/{{ board.slug }}/ – {{ board.title }}</h1>
+  <p>{{ board.description }}</p>
+
+  <a href="{% url 'boards:thread_create' board.slug %}">+ New Thread</a>
+
+  <ul class="threads">
+    {% for thread in threads %}
+      <li>
+        {% if thread.image %}
+          <img src="{{ thread.image.url }}" alt="{{ thread.title }}" loading="lazy">
+        {% endif %}
+        <a href="#">{{ thread.title }}</a> &mdash; {{ thread.created_at|date:"M j, Y H:i" }}
+      </li>
+    {% empty %}
+      <li>No threads yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+
